@@ -11,7 +11,7 @@ class Car extends Model
 
     public function user()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsTo(User::class);
     }
     public function tags()
     {
