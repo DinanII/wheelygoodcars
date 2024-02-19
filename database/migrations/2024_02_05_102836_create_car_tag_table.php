@@ -12,11 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('car_tag', function (Blueprint $table) {
-            //$table->id();
+            $table->unsignedBigInteger('car_id');
+            $table->unsignedBigInteger('tag_id');
             $table->timestamps();
-            $table->foreignId('tag_id')->references('id')->on('tags');
-            $table->foreignId('car_id')->references('id')->on('cars');
-            // Nullable: $table->integer('team_id')->nullable()->default(null);
+
+            $table->foreign('car_id')->references('id')->on('cars')->onDelete('cascade');
+            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade');
+
+            $table->primary(['car_id', 'tag_id']);
         });
     }
 
