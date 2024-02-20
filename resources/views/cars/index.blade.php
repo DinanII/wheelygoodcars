@@ -13,8 +13,8 @@
             <div class="card-body">
                 <h2>{{ $car->model }}</h2>
                 <img src="{{ $car->image }}" alt="Image of a {{ $car->model }} from {{ $car->user->name }}"><br />
-                Prijs: <b>&euro;{{ number_format($car->price,2,',','.') }}</b>
-                <p class="card-text">{{ $car->user->name }}</p>
+                Prijs: <b>&euro;{{ number_format($car->price,2,',','.') }}</b><br />
+                Geplaatst door: <p class="card-text">{{ $car->user->name }}</p>
                 <a href="{{ route('cars.show', $car->id) }}" class="btn btn-primary">Read more</a>
             </div>
         </div>

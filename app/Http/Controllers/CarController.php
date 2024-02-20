@@ -15,6 +15,13 @@ class CarController extends Controller
         $cars = Car::all();
         return view('cars.index', compact('cars'));
     }
+    public function profile($userId)
+    {
+        // Retrieve cars with associated tags, belonging to specified user
+        $cars = Car::with('tags')->where('user_id', $userId)->get();
+
+        return view('cars.index', compact('cars'));
+    }
 
     /**
      * Show the form for creating a new resource.

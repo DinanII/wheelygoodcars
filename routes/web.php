@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::resource('cars', CarController::class);
+    Route::get('cars/profile/{userId}/cars', [CarController::class, 'profile'])->name('profile.cars');
 });
 
 require __DIR__ . '/auth.php';
