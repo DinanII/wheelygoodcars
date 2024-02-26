@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Car;
-
+use App\Models\Tag;
 class CarController extends Controller
 {
     /**
@@ -26,9 +26,18 @@ class CarController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create() 
     {
-        //
+        return view("cars.create");
+    }
+    public function createStep2(Request $request) {
+        $request->validate([
+            'licence' => ['required', 'string', 'max:255'],
+        ]);
+
+        $licence = $request->input('licence');
+        $tags = Tag::all();
+        return view('cars.createStep2',compact('tags','licence'));
     }
 
     /**
@@ -36,7 +45,7 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
