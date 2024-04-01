@@ -18,7 +18,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::post('/create-step2', [CarController::class,'createStep2'])->name('cars.createStep2');
+    Route::post('/cars/create/validateLicense', [CarController::class,'validateLicense'])->name('cars.create.validateLicense');
+    Route::get('/cars/create/carInfo/{license}',[CarController::class,'create2Form'])->name('cars.create.carInfo');
     Route::resource('cars', CarController::class);
     Route::get('cars/profile/{userId}/cars', [CarController::class, 'profile'])->name('profile.cars');
 });
