@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Car;
 use App\Models\Tag;
 use PharIo\Manifest\License;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class CarController extends Controller
 {
@@ -16,13 +18,16 @@ class CarController extends Controller
     {
         $cars = Car::all();
         return view('cars.index', compact('cars'));
-    }
+        }
     public function profile($userId)
     {
-        // Retrieve cars with associated tags, belonging to specified user
-        $cars = Car::with('tags')->where('user_id', $userId)->get();
-
-        return view('cars.index', compact('cars'));
+        try {
+            // Retrieve cars with associated tags, belonging to specified user
+            $cars = Car::with('tags')->where('user_id', $userId)->get();
+            return view('cars.ownCars', compact('cars'));
+        } catch (\Exception $e) {
+            dd($e->getMessage());  // Display the error message
+        }
     }
 
     /**
@@ -36,16 +41,20 @@ class CarController extends Controller
         $request->validate([
             'license' => ['required', 'string', 'max:255'],
         ]);
-        // TODO: Insert RWD API functionality
+
         $license = $request->input('license');
         $succes = 'License succesfully updated!';
-        return redirect()->route('cars.create.carInfo',compact('license','succes'));
+        
+        //return redirect()->route('cars.create.carInfo',compact('license','succes'));
+        return $this->create2Form($license);
 
     }
 
     public function create2Form($license) {
+
+        $rdwData = Http::get('https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=4ZDB70');
         $tags = Tag::all();
-        return view('cars.createStep2',compact('tags','license'));
+        return view('cars.createStep2',compact('tags','license','rdwData'));
     }
     /**
      * Store a newly created resource in storage.
@@ -54,24 +63,18 @@ class CarController extends Controller
     {
         // dd($request);
         request()->validate([
-            'license' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'price' => 'required|integer|max:255',
-            'mileage' => 'required|integer|max:255',
-            'seats' => 'required|integer|max:255',
-            'doors' => 'required|integer|max:255',
+            'license' => 'required|string',
+            'brand' => 'required|string',
+            'model' => 'required|string',
+            'price' => 'required|integer',
+            'mileage' => 'required|integer',
+            'seats' => 'required|integer',
+            'doors' => 'required|integer',
             'production_year' => 'required|integer',
-            'weight' => 'required|integer|max:255',
-            'color' => 'required|string|max:255',
+            'weight' => 'required|integer',
+            'color' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,gif|max:10240'
         ]);
-        
-        //----------------------
-        // TODO: Zorg dat de bijgevoegde tags ook opgeslagen worden.
-        // Voor iedere tag in tags (array): maak een nieuwe car_tag entry aan,
-        // iedere entry moet het ID van de car en de tag bevatten.
-        //----------------------
 
         $imagePath = $request->file('image')->store('img/cars', 'public');
         $nCar = new Car();
@@ -87,9 +90,13 @@ class CarController extends Controller
         $nCar->weight = $request->input('weight');
         $nCar->color = $request->input('color');
         $nCar->image = $imagePath;
-
         $nCar->save();
+        $tags = $request->input('tags');
+        foreach ($tags as $tagId) {
+            $nCar->tags()->attach($tagId);
 
+        }
+        return $this->profile(auth()->user()->id);
     }
 
     /**
@@ -97,7 +104,8 @@ class CarController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $car = Car::with('tags')->where('id', $id)->firstOrFail();
+        return view('cars.detail', compact('car'));
     }
 
     /**
@@ -105,7 +113,9 @@ class CarController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $car = Car::with('tags')->where('id', $id)->firstOrFail();
+        $tags = Tag::all();
+        return view('cars.edit', compact('car','tags'));
     }
 
     /**
@@ -113,7 +123,49 @@ class CarController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $car = Car::findOrFail($id);
+
+        $request->validate([
+            'brand' => 'required|string',
+            'model' => 'required|string',
+            'price' => 'required|integer',
+            'mileage' => 'required|integer',
+            'seats' => 'required|integer',
+            'doors' => 'required|integer',
+            'production_year' => 'required|integer',
+            'weight' => 'required|integer',
+            'color' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,gif|max:10240'
+        ]);
+
+        // Check if a new image file has been uploaded
+        if ($request->hasFile('image')) {
+            // Delete the old image file if it exists
+            if (Storage::disk('public')->exists($car->image)) {
+                Storage::disk('public')->delete($car->image);
+            }
+
+            // Store the new image file
+            $imagePath = $request->file('image')->store('img/cars', 'public');
+            $car->image = $imagePath;
+        }
+
+        $car->make = $request->input('brand');
+        $car->model = $request->input('model');
+        $car->price = $request->input('price');
+        $car->mileage = $request->input('mileage');
+        $car->seats = $request->input('seats');
+        $car->doors = $request->input('doors');
+        $car->production_year = $request->input('production_year');
+        $car->weight = $request->input('weight');
+        $car->color = $request->input('color');
+        $car->save();
+
+        // Sync tags
+        $tags = $request->input('tags');
+        $car->tags()->sync($tags);
+
+        return $this->profile(auth()->user()->id);
     }
 
     /**
@@ -121,6 +173,8 @@ class CarController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $car = Car::findOrFail($id);
+        $car->delete();
+        return view('cars.index', compact('car'));
     }
 }

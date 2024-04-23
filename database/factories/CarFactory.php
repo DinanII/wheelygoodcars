@@ -37,7 +37,7 @@ class CarFactory extends Factory
             'production_year' => fake()->numberBetween(1960, 2024),
             'weight' => fake()->numberBetween(780, 7800),
             'color' => fake()->colorName(),
-            'image' => 'https://picsum.photos/300/200',
+            'image' => '/img/cars/dummy.png' ,
             'sold_at' => fake()->dateTimeBetween('-3 years'),
             'views' => fake()->numberBetween(0, 1500)
         ];
