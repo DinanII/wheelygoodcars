@@ -17,7 +17,7 @@
                     <h2>Geen auto's gevonden...</h2>
                 @endif
                 <h2>{{ $car->model }}</h2>
-                <img src="{{ Storage::url($car->image) }}" alt="Image of a {{ $car->model }} from {{ $car->user->name }}" style="width: 300px; height: 200px;"><br />
+                <img src="{{ Storage::url($car->image) }}" alt="Image of a {{ $car->model }} from {{ $car->user->name }}" style="max-width: 75%; max-height: 85%;"><br />
                 Prijs: <b>&euro;{{ number_format($car->price,2,',','.') }}</b><br />
                 Geplaatst door: <p class="card-text">{{ $car->user->name }}</p>
                 <a href="{{ route('cars.show', $car->id) }}" class="btn btn-primary">Read more</a>
