@@ -127,6 +127,11 @@
                                     <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
+                                <input type="text" id="newTagInput" placeholder="Add a new tag">
+                                <button type="button" onclick="addNewTag()">Add Tag</button>
+                                @error('tags')
+                                    <p>{{ $message }}</p>
+                                @enderror
                                 @error('tags')
                                 <p>{{ $message }}</p>
                             @enderror
@@ -142,7 +147,7 @@
                         <div class="row mb-3 justify-content-center">
                             <div class="col-sm-2 text-start">
                                 <!-- <button>Submit (buttons)</button> -->
-                                <input type="submit" value="Submit (input-tags)">
+                                <input type="submit" value="Submit form">
                             </div>
                         </div>
                     </form>
@@ -151,4 +156,21 @@
         </div>        
     </div>
 </div>
+<script>
+    function addNewTag() {
+        var newTagInput = document.getElementById('newTagInput');
+        var newTagName = newTagInput.value.trim();
+        
+        if (newTagName !== '') {
+            var tagsSelect = document.getElementById('tags');
+            var newOption = document.createElement('option');
+            newOption.value = ''; // You can set the value to something meaningful
+            newOption.text = newTagName;
+            tagsSelect.add(newOption);
+
+            // Clear the input field after adding the tag
+            newTagInput.value = '';
+        }
+    }
+</script>
 @endsection

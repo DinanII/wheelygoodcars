@@ -22,7 +22,7 @@
                         <tr>
                             <td>{{ $car->model }}</td>
                             <td>
-                                <img src="{{ asset('storage/'.$car->image) }}" alt="Image of a {{ $car->model }} from {{ $car->user->name }}" style="max-width: 150px; max-height: 100px;">
+                                <img src="{{ Storage::url($car->image) }}" style="max-width: 150px; max-height: 100px;">
                             </td>
                             <td>&euro;{{ number_format($car->price, 2, ',', '.') }}</td>
                             <td>{{ $car->user->name }}</td>
