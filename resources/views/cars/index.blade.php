@@ -4,6 +4,11 @@
     <!-- <div>
         <a class="btn btn-primary mt-6 m-3" href="{{ route('cars.create') }}">New Car</a>
     </div> -->
+    @if(!$cars || count($cars) < 1)
+    <div class="text-danger" >
+        No cars available.
+    </div>
+    @endif
     @foreach($cars as $car)
     <div class="col-md-4 mb-4">
         <div class="card border border-primary">

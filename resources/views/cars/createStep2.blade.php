@@ -6,12 +6,16 @@
             <div class="card">
                 <div class="card-header">Create Car</div>
                 <div class="card-body">
-                    <p>
-                        <strong>Debug</strong>
-                        <pre>
-                            {{ $rdwData }}
-                        </pre>
-                    </p>
+                    <strong>Debug</strong>
+                    <div>
+                            @php
+                            echo json_encode($rdwData)
+                            @endphp
+                            
+                    </div>
+                    <div>
+                        {{ $license. $brand. $model. $price. $doors. $weight. $color. $seats }}
+                    </div>
                     <form class="m-3" action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3 justify-content-center">
@@ -28,7 +32,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="brand" class="col-sm-2 col-form-label text-end">Brand</label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" placeholder="Car brand" name="brand" id="brand" @isset($rdwData[0]) value="{{ $rdwData[0] }}" @endisset>
+                                <input type="text" class="form-control" @isset($brand) value='{{ $brand }}' @endisset  placeholder="Car brand" name="brand" id="brand" >
                             </div>
                             @error('brand')
                                 <p>{{ $message }}</p>
@@ -37,7 +41,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="model" class="col-sm-2 col-form-label text-end">model</label>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control" placeholder="Car model" name="model" id="model">
+                                <input type="text" class="form-control" placeholder="Car model" name="model" id="model" @isset($model) value='{{ $model }}' @endisset >
                             </div>
                             @error('model')
                                 <p>{{ $message }}</p>
@@ -46,7 +50,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="price" class="col-sm-2 col-form-label text-end">Car Price</label>
                             <div class="col-sm-2">
-                                <input type="number" placeholder="Car price" class="form-control" step="1" id="price" name="price">
+                                <input type="number" placeholder="Car price" class="form-control" step="1" id="price" name="price" @isset($price) value='{{ $price }}' @endisset>
                             </div>
                             @error('price')
                                 <p>{{ $message }}</p>
@@ -55,7 +59,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="mileage" class="col-sm-2 col-form-label text-end">Car Mileage</label>
                             <div class="col-sm-2">
-                                <input value="{{ old('mileage') }}" type="number" placeholder="Current car mileage" class="form-control" step="1" id="mileage" name="mileage">
+                                <input value="{{ old('mileage') }}" type="number" placeholder="Current car mileage" class="form-control" step="1" id="mileage" name="mileage" @isset($mileage) value='{{ $mileage }}' @endisset>
                             </div>
                             @error('mileage')
                                 <p>{{ $message }}</p>
@@ -64,7 +68,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="seats" class="col-sm-2 col-form-label text-end">Car seats</label>
                             <div class="col-sm-2">
-                                <input type="number" placeholder="Current car seats" class="form-control" step="1" id="seats" name="seats">
+                                <input type="number" placeholder="Current car seats" class="form-control" step="1" id="seats" name="seats" @isset($seats) value='{{ $seats }}' @endisset>
                             </div>
                             @error('seats')
                                 <p>{{ $message }}</p>
@@ -73,7 +77,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="doors" class="col-sm-2 col-form-label text-end">Car doors</label>
                             <div class="col-sm-2">
-                                <input type="number" placeholder="Current car doors" class="form-control" step="1" id="doors" name="doors">
+                                <input type="number" placeholder="Current car doors" class="form-control" step="1" id="doors" name="doors" @isset($doors) value='{{ $doors }}' @endisset >
                             </div>
                             @error('doors')
                                 <p>{{ $message }}</p>
@@ -91,7 +95,7 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="weight" class="col-sm-2 col-form-label text-end">Car weight</label>
                             <div class="col-sm-2">
-                                <input type="number" id="weight" step="1" name="weight">
+                                <input type="number" id="weight" step="1" name="weight" @isset($weight) value='{{ $weight }}' @endisset>
                             </div>
                             @error('weight')
                                 <p>{{ $message }}</p>
@@ -100,7 +104,8 @@
                         <div class="row mb-3 justify-content-center">
                             <label for="color" class="col-sm-2 col-form-label text-end">Car color</label>
                             <div class="col-sm-2">
-                                <input type="color" id="color" name="color">
+                                <p class='badge text-bg-primary' >@isset($color) {{ $color }} @endisset</p>
+                                <input type="color" id="color" name="color" >
                             </div>
                             @error('color')
                                 <p>{{ $message }}</p>

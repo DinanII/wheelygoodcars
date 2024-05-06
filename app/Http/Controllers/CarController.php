@@ -51,10 +51,30 @@ class CarController extends Controller
     }
 
     public function create2Form($license) {
+        $rdwResponse = Http::get("https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken={$license}")->json();
+        
+        if (!empty($rdwResponse)) {
+            $rdwData = $rdwResponse[0];
+            $brand = $rdwData['merk'];
+            $model = $rdwData['handelsbenaming'];
+            $price = $rdwData['catalogusprijs'];
+            $doors = $rdwData['aantal_deuren'];
+            $weight = $rdwData['massa_rijklaar'];
+            $color = '';
+            if ($rdwData['tweede_kleur'] === 'Niet geregistreerd') {
+                $color = $rdwData['eerste_kleur'];
+            }
+            else {
+                $color = $rdwData['tweede_kleur'];
+            }
+            //$license = $rdwData['license'];
+            $seats = $rdwData['aantal_zitplaatsen'];
+        } else {
+            $rdwData = null;
+        }
 
-        $rdwData = Http::get('https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=4ZDB70');
         $tags = Tag::all();
-        return view('cars.createStep2',compact('tags','license','rdwData'));
+        return view('cars.createStep2', compact('seats','tags','license','rdwData','brand','model','price','doors','weight','color'));
     }
     /**
      * Store a newly created resource in storage.
