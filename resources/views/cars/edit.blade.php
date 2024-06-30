@@ -132,10 +132,23 @@
             <label for="tags">Select Tags:</label>
             <select name="tags[]" id="tags" class="form-control" multiple>
                 @foreach($tags as $tag)
-                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $car->tags->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $tag->name }}</option>
+                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                 @endforeach
             </select>
-            @error('tags')
+                <input type="text" id="newTagInput" placeholder="Add a new tag">
+                <button type="button" onclick="addNewTag()">Add Tag</button>
+                @error('tags')
+                    <p>{{ $message }}</p>
+                @enderror
+                @error('tags')
+                <p>{{ $message }}</p>
+            @enderror
+        </div>
+        <div class="row mb-3 justify-content-center">
+            <div class="col-sm-2">
+                <input type="hidden" name="license" value="{{ $car->license}}">
+            </div>
+            @error('car->license')
                 <p>{{ $message }}</p>
             @enderror
         </div>
@@ -146,5 +159,22 @@
             </div>
         </div>
     </form>
+    <script>
+    function addNewTag() {
+        var newTagInput = document.getElementById('newTagInput');
+        var newTagName = newTagInput.value.trim();
+        
+        if (newTagName !== '') {
+            var tagsSelect = document.getElementById('tags');
+            var newOption = document.createElement('option');
+            newOption.value = ''; // You can set the value to something meaningful
+            newOption.text = newTagName;
+            tagsSelect.add(newOption);
+
+            // Clear the input field after adding the tag
+            newTagInput.value = '';
+        }
+    }
+</script>
 </div>
 @endsection

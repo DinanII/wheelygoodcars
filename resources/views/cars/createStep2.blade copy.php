@@ -1,19 +1,20 @@
 @extends('layouts.app')
 @section('content')
-
 <div class="container">
-    <strong>Debug</strong>
-<pre>
-    {{ json_encode($rdwData) }}
-</pre> 
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Create Car</div>
                 <div class="card-body">
-               
+                    <strong>Debug</strong>
                     <div>
-                        {{ $license. ' '. $brand. ' '.$model. ' '.$price. ' '.$doors. ' '.$weight. ' '.$color. ' '.$seats }}
+                            @php
+                            echo json_encode($rdwData)
+                            @endphp
+                            
+                    </div>
+                    <div>
+                        {{ $license. $brand. $model. $price. $doors. $weight. $color. $seats }}
                     </div>
                     <form class="m-3" action="{{ route('cars.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -120,14 +121,10 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <div>
-                                <strong>Selected tags</strong>
-
-                            </div>
                             <label for="tags">Select Tags:</label>
                             <select name="tags[]" id="tags" class="form-control" multiple>
-                                @foreach($tags as $tag)endforeach
-                                    <option value="{{ $tag }}">{{ $tag->name }}</option>
+                                @foreach($tags as $tag)
+                                    <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                 @endforeach
                             </select>
                                 <input type="text" id="newTagInput" placeholder="Add a new tag">
@@ -167,7 +164,7 @@
         if (newTagName !== '') {
             var tagsSelect = document.getElementById('tags');
             var newOption = document.createElement('option');
-            newOption.value = newTagName; // You can set the value to something meaningful
+            newOption.value = ''; // You can set the value to something meaningful
             newOption.text = newTagName;
             tagsSelect.add(newOption);
 
